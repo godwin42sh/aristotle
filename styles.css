@@ -89,6 +89,7 @@ h2 {
 }
 
 /* Styles communs des éléments */
+/* Styles pour chaque élément */
 .element {
     border: 2px solid;
     padding: 15px;
@@ -96,7 +97,7 @@ h2 {
     background-size: 100% 100%;
     background-repeat: no-repeat;
     position: relative;
-    min-height: 180px;
+    min-height: 220px;
 }
 
 .element-header {
@@ -305,16 +306,66 @@ button:hover {
     transform: translateX(-50%);
     font-size: 0.85em;
     margin-top: 5px;
+    pointer-events: none;
 }
 
 .element-header:hover .element-tooltip {
     visibility: visible;
     opacity: 1;
+    pointer-events: auto;
 }
 
 .element-tooltip p {
     margin: 5px 0;
     line-height: 1.4;
+}
+
+/* Styles pour les compétences */
+.competences-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.competence, .competence-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.9em;
+}
+
+.competence label, .competence-total label {
+    flex: 1;
+    font-weight: bold;
+}
+
+.competence input[type="number"] {
+    width: 60px;
+    text-align: center;
+    padding: 3px;
+    border: 1px solid #b89c7a;
+    background-color: #fffbf6;
+    border-radius: 3px;
+}
+
+.competence-total {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed #b89c7a;
+    margin-bottom: 10px;
+}
+
+.competence-total input {
+    width: 60px;
+    text-align: center;
+    padding: 3px;
+    border: 1px solid #b89c7a;
+    background-color: #f0e8d8;
+    font-weight: bold;
+    border-radius: 3px;
+    color: #4b2c12;
+    cursor: pointer;
 }
 
 .feu .element-tooltip {
@@ -362,5 +413,17 @@ button:hover {
     
     .modal-content {
         width: 95%;
+    }
+    
+    .competences-container {
+        gap: 5px;
+    }
+    
+    .competence, .competence-total {
+        font-size: 0.85em;
+    }
+    
+    .competence input[type="number"], .competence-total input {
+        width: 50px;
     }
 }

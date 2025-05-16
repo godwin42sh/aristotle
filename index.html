@@ -35,9 +35,29 @@
                 <div class="element-header">
                     <h2>Feu</h2>
                     <div class="element-tooltip">
-                        <p><strong>Exploser (action)</strong> : quelque chose, quelqu'un, se déchaîner, de toutes ses forces…</p>
-                        <p><strong>Amorcer (social)</strong> : commencer, se présenter, quelque chose, une émotion, une situation…</p>
-                        <p><strong>Attiser (utilité)</strong> : sa flamme intérieur, ses forces, ses émotions, renforcer, nourrir…</p>
+                        <div class="tooltip-details">
+                            <p><strong>Exploser (action)</strong> : quelque chose, quelqu'un, se déchaîner, de toutes ses forces…</p>
+                            <p><strong>Amorcer (social)</strong> : commencer, se présenter, quelque chose, une émotion, une situation…</p>
+                            <p><strong>Attiser (utilité)</strong> : sa flamme intérieur, ses forces, ses émotions, renforcer, nourrir…</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="competences-container">
+                    <div class="competence">
+                        <label for="feu-exploser">Exploser :</label>
+                        <input type="number" id="feu-exploser" min="0" max="10" value="0" class="competence-input" data-element="feu">
+                    </div>
+                    <div class="competence">
+                        <label for="feu-amorcer">Amorcer :</label>
+                        <input type="number" id="feu-amorcer" min="0" max="10" value="0" class="competence-input" data-element="feu">
+                    </div>
+                    <div class="competence">
+                        <label for="feu-attiser">Attiser :</label>
+                        <input type="number" id="feu-attiser" min="0" max="10" value="0" class="competence-input" data-element="feu">
+                    </div>
+                    <div class="competence-total">
+                        <label>Limite de points :</label>
+                        <input type="number" id="feu-total" value="0" min="0" max="12">
                     </div>
                 </div>
                 <div class="points-container">
@@ -49,9 +69,29 @@
                 <div class="element-header">
                     <h2>Air</h2>
                     <div class="element-tooltip">
-                        <p><strong>Filer (action)</strong> : donner un coup vif, un coup droit, suivre, foncer, partir vite…</p>
-                        <p><strong>Insuffler (social)</strong> : convaincre, apprendre, faire parler, créer une émotion nouvelle, corrompre…</p>
-                        <p><strong>Évaporer (utilité)</strong> : faire disparaître, disparaître, volatiliser, s'effacer, s'ouvrir, ouvrir ses sens...</p>
+                        <div class="tooltip-details">
+                            <p><strong>Filer (action)</strong> : donner un coup vif, un coup droit, suivre, foncer, partir vite…</p>
+                            <p><strong>Insuffler (social)</strong> : convaincre, apprendre, faire parler, créer une émotion nouvelle, corrompre…</p>
+                            <p><strong>Évaporer (utilité)</strong> : faire disparaître, disparaître, volatiliser, s'effacer, s'ouvrir, ouvrir ses sens...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="competences-container">
+                    <div class="competence">
+                        <label for="air-filer">Filer :</label>
+                        <input type="number" id="air-filer" min="0" max="10" value="0" class="competence-input" data-element="air">
+                    </div>
+                    <div class="competence">
+                        <label for="air-insuffler">Insuffler :</label>
+                        <input type="number" id="air-insuffler" min="0" max="10" value="0" class="competence-input" data-element="air">
+                    </div>
+                    <div class="competence">
+                        <label for="air-evaporer">Évaporer :</label>
+                        <input type="number" id="air-evaporer" min="0" max="10" value="0" class="competence-input" data-element="air">
+                    </div>
+                    <div class="competence-total">
+                        <label>Limite de points :</label>
+                        <input type="number" id="air-total" value="0" min="0" max="12">
                     </div>
                 </div>
                 <div class="points-container">
@@ -63,9 +103,29 @@
                 <div class="element-header">
                     <h2>Terre</h2>
                     <div class="element-tooltip">
-                        <p><strong>Peser (action)</strong> : frapper résolument, coup sur, presser, charger, écraser…</p>
-                        <p><strong>Affermir (social)</strong> : imposer, ordonner, renforcer une position…</p>
-                        <p><strong>Évaluer (utilité)</strong> : calculer, mesurer, réfléchir, rechercher...</p>
+                        <div class="tooltip-details">
+                            <p><strong>Peser (action)</strong> : frapper résolument, coup sur, presser, charger, écraser…</p>
+                            <p><strong>Affermir (social)</strong> : imposer, ordonner, renforcer une position…</p>
+                            <p><strong>Évaluer (utilité)</strong> : calculer, mesurer, réfléchir, rechercher...</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="competences-container">
+                    <div class="competence">
+                        <label for="terre-peser">Peser :</label>
+                        <input type="number" id="terre-peser" min="0" max="10" value="0" class="competence-input" data-element="terre">
+                    </div>
+                    <div class="competence">
+                        <label for="terre-affermir">Affermir :</label>
+                        <input type="number" id="terre-affermir" min="0" max="10" value="0" class="competence-input" data-element="terre">
+                    </div>
+                    <div class="competence">
+                        <label for="terre-evaluer">Évaluer :</label>
+                        <input type="number" id="terre-evaluer" min="0" max="10" value="0" class="competence-input" data-element="terre">
+                    </div>
+                    <div class="competence-total">
+                        <label>Limite de points :</label>
+                        <input type="number" id="terre-total" value="0" min="0" max="12">
                     </div>
                 </div>
                 <div class="points-container">
@@ -77,9 +137,29 @@
                 <div class="element-header">
                     <h2>Eau</h2>
                     <div class="element-tooltip">
-                        <p><strong>Dévier (action)</strong> : rediriger, tordre, assouplir, modifier...</p>
-                        <p><strong>Abreuver (social)</strong> : Nourrir une idée, exacerber, renforcer…</p>
-                        <p><strong>Absorber (utilité)</strong> : des informations, des sensations, perception, intuition, empathie, récupérer, s'adapter…</p>
+                        <div class="tooltip-details">
+                            <p><strong>Dévier (action)</strong> : rediriger, tordre, assouplir, modifier...</p>
+                            <p><strong>Abreuver (social)</strong> : Nourrir une idée, exacerber, renforcer…</p>
+                            <p><strong>Absorber (utilité)</strong> : des informations, des sensations, perception, intuition, empathie, récupérer, s'adapter…</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="competences-container">
+                    <div class="competence">
+                        <label for="eau-devier">Dévier :</label>
+                        <input type="number" id="eau-devier" min="0" max="10" value="0" class="competence-input" data-element="eau">
+                    </div>
+                    <div class="competence">
+                        <label for="eau-abreuver">Abreuver :</label>
+                        <input type="number" id="eau-abreuver" min="0" max="10" value="0" class="competence-input" data-element="eau">
+                    </div>
+                    <div class="competence">
+                        <label for="eau-absorber">Absorber :</label>
+                        <input type="number" id="eau-absorber" min="0" max="10" value="0" class="competence-input" data-element="eau">
+                    </div>
+                    <div class="competence-total">
+                        <label>Limite de points :</label>
+                        <input type="number" id="eau-total" value="0" min="0" max="12">
                     </div>
                 </div>
                 <div class="points-container">

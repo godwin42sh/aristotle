@@ -8,6 +8,38 @@ document.addEventListener('DOMContentLoaded', function() {
     const equipementTextarea = document.getElementById('equipement');
     const notesTextarea = document.getElementById('notes');
     
+    // Compteurs de points disponibles par élément
+    const totalInputs = {
+        feu: document.getElementById('feu-total'),
+        air: document.getElementById('air-total'),
+        terre: document.getElementById('terre-total'),
+        eau: document.getElementById('eau-total')
+    };
+    
+    // Compétences par élément
+    const competenceInputs = {
+        feu: {
+            exploser: document.getElementById('feu-exploser'),
+            amorcer: document.getElementById('feu-amorcer'),
+            attiser: document.getElementById('feu-attiser')
+        },
+        air: {
+            filer: document.getElementById('air-filer'),
+            insuffler: document.getElementById('air-insuffler'),
+            evaporer: document.getElementById('air-evaporer')
+        },
+        terre: {
+            peser: document.getElementById('terre-peser'),
+            affermir: document.getElementById('terre-affermir'),
+            evaluer: document.getElementById('terre-evaluer')
+        },
+        eau: {
+            devier: document.getElementById('eau-devier'),
+            abreuver: document.getElementById('eau-abreuver'),
+            absorber: document.getElementById('eau-absorber')
+        }
+    };
+    
     // Éléments des tooltips
     const elementHeaders = document.querySelectorAll('.element-header');
     const tooltips = document.querySelectorAll('.element-tooltip');
@@ -29,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialisation
     initializePoints();
     setupTooltips();
+    setupCompetencesEvents();
     
     // Événements
     saveBtn.addEventListener('click', saveCharacter);
@@ -42,6 +75,9 @@ document.addEventListener('DOMContentLoaded', function() {
         importModal.style.display = 'none';
     });
     confirmImport.addEventListener('click', importCharacter);
+    
+    // Vérifier les limites de points au démarrage
+    checkAllPointLimits();
     
     // Fermer la modal en cliquant en dehors
     window.addEventListener('click', function(event) {
@@ -72,10 +108,64 @@ document.addEventListener('DOMContentLoaded', function() {
                 container.appendChild(point);
             }
         });
+        
+        // Initialiser les totaux
+        updateAllTotals();
+    }
+    
+    // Configurer les événements pour les inputs de compétences et points disponibles
+    function setupCompetencesEvents() {
+        // Événements pour les inputs de compétences
+        const competenceInputs = document.querySelectorAll('.competence-input');
+        competenceInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                // Limiter la valeur entre 0 et 10
+                if (this.value < 0) this.value = 0;
+                if (this.value > 10) this.value = 10;
+            });
+        });
+        
+        // Événements pour les inputs de points disponibles
+        Object.values(totalInputs).forEach(input => {
+            input.addEventListener('change', function() {
+                // Limiter la valeur entre 0 et 12
+                if (this.value < 0) this.value = 0;
+                if (this.value > 12) this.value = 12;
+                
+                // Vérifier si le nombre de points cochés dépasse maintenant la limite
+                const element = this.id.split('-')[0];
+                const pointStatus = checkPointLimitForElement(element);
+                
+                if (!pointStatus.isValid) {
+                    alert(`Attention: Vous avez ${pointStatus.current} points cochés, mais seulement ${pointStatus.limit} points disponibles pour cet élément.`);
+                }
+            });
+        });
+    }
+    
+    // Fonction pour vérifier si le nombre de points cochés respecte la limite
+    function checkPointLimitForElement(element) {
+        const availablePoints = parseInt(totalInputs[element].value) || 0;
+        const checkedPoints = document.querySelectorAll(`#${element} .point.checked`).length;
+        
+        return {
+            current: checkedPoints,
+            limit: availablePoints,
+            isValid: checkedPoints <= availablePoints
+        };
+    }
+    
+    // Vérifier les limites de points pour tous les éléments
+    function checkAllPointLimits() {
+        elements.forEach(element => {
+            checkPointLimitForElement(element);
+        });
     }
     
     // Fonction pour basculer l'état d'un point
     function togglePoint(point, isShiftPressed) {
+        const element = point.dataset.element;
+        
         if (isShiftPressed) {
             // Mode "utilisé" (avec Shift)
             if (point.classList.contains('checked')) {
@@ -83,9 +173,20 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } else {
             // Mode "coché" (sans Shift)
-            point.classList.toggle('checked');
-            if (!point.classList.contains('checked')) {
+            if (point.classList.contains('checked')) {
+                // Décocher un point est toujours possible
+                point.classList.remove('checked');
                 point.classList.remove('used');
+            } else {
+                // Vérifier si on dépasse le nombre de points disponibles
+                const pointStatus = checkPointLimitForElement(element);
+                if (pointStatus.current < pointStatus.limit) {
+                    // On peut cocher un point supplémentaire
+                    point.classList.add('checked');
+                } else {
+                    // Afficher une alerte si on essaie de dépasser le nombre de points disponibles
+                    alert(`Vous ne pouvez pas cocher plus de ${pointStatus.limit} points pour cet élément.`);
+                }
             }
         }
     }
@@ -146,6 +247,19 @@ document.addEventListener('DOMContentLoaded', function() {
             equipementTextarea.value = '';
             notesTextarea.value = '';
             
+            // Réinitialiser toutes les compétences
+            Object.values(competenceInputs).forEach(elementCompetences => {
+                Object.values(elementCompetences).forEach(input => {
+                    input.value = 0;
+                });
+            });
+            
+            // Réinitialiser les points disponibles
+            Object.values(totalInputs).forEach(input => {
+                input.value = 0;
+            });
+            
+            // Réinitialiser tous les points cochables
             const points = document.querySelectorAll('.point');
             points.forEach(point => {
                 point.classList.remove('checked', 'used');
@@ -163,6 +277,34 @@ document.addEventListener('DOMContentLoaded', function() {
             talents: talentsTextarea.value,
             equipement: equipementTextarea.value,
             notes: notesTextarea.value,
+            competences: {
+                feu: {
+                    exploser: competenceInputs.feu.exploser.value,
+                    amorcer: competenceInputs.feu.amorcer.value,
+                    attiser: competenceInputs.feu.attiser.value
+                },
+                air: {
+                    filer: competenceInputs.air.filer.value,
+                    insuffler: competenceInputs.air.insuffler.value,
+                    evaporer: competenceInputs.air.evaporer.value
+                },
+                terre: {
+                    peser: competenceInputs.terre.peser.value,
+                    affermir: competenceInputs.terre.affermir.value,
+                    evaluer: competenceInputs.terre.evaluer.value
+                },
+                eau: {
+                    devier: competenceInputs.eau.devier.value,
+                    abreuver: competenceInputs.eau.abreuver.value,
+                    absorber: competenceInputs.eau.absorber.value
+                }
+            },
+            pointsDisponibles: {
+                feu: totalInputs.feu.value,
+                air: totalInputs.air.value,
+                terre: totalInputs.terre.value,
+                eau: totalInputs.eau.value
+            },
             elements: {}
         };
         
@@ -190,6 +332,45 @@ document.addEventListener('DOMContentLoaded', function() {
         talentsTextarea.value = data.talents || '';
         equipementTextarea.value = data.equipement || '';
         notesTextarea.value = data.notes || '';
+        
+        // Charger les compétences si elles existent
+        if (data.competences) {
+            // Feu
+            if (data.competences.feu) {
+                competenceInputs.feu.exploser.value = data.competences.feu.exploser || 0;
+                competenceInputs.feu.amorcer.value = data.competences.feu.amorcer || 0;
+                competenceInputs.feu.attiser.value = data.competences.feu.attiser || 0;
+            }
+            
+            // Air
+            if (data.competences.air) {
+                competenceInputs.air.filer.value = data.competences.air.filer || 0;
+                competenceInputs.air.insuffler.value = data.competences.air.insuffler || 0;
+                competenceInputs.air.evaporer.value = data.competences.air.evaporer || 0;
+            }
+            
+            // Terre
+            if (data.competences.terre) {
+                competenceInputs.terre.peser.value = data.competences.terre.peser || 0;
+                competenceInputs.terre.affermir.value = data.competences.terre.affermir || 0;
+                competenceInputs.terre.evaluer.value = data.competences.terre.evaluer || 0;
+            }
+            
+            // Eau
+            if (data.competences.eau) {
+                competenceInputs.eau.devier.value = data.competences.eau.devier || 0;
+                competenceInputs.eau.abreuver.value = data.competences.eau.abreuver || 0;
+                competenceInputs.eau.absorber.value = data.competences.eau.absorber || 0;
+            }
+        }
+        
+        // Charger les points disponibles
+        if (data.pointsDisponibles) {
+            totalInputs.feu.value = data.pointsDisponibles.feu || 0;
+            totalInputs.air.value = data.pointsDisponibles.air || 0;
+            totalInputs.terre.value = data.pointsDisponibles.terre || 0;
+            totalInputs.eau.value = data.pointsDisponibles.eau || 0;
+        }
         
         // Réinitialiser tous les points d'abord
         const allPoints = document.querySelectorAll('.point');
