@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
             insuffler: document.getElementById('air-insuffler'),
             evaporer: document.getElementById('air-evaporer')
         },
+        ether: {}, // Éther n'a pas de compétences spécifiques
         terre: {
             peser: document.getElementById('terre-peser'),
             affermir: document.getElementById('terre-affermir'),
@@ -90,7 +91,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction pour initialiser les points pour chaque élément
     function initializePoints() {
         elements.forEach(element => {
+            // L'Éther n'a pas de points à cocher
+            if (element === 'ether') return;
+            
             const container = document.querySelector(`#${element} .points-container`);
+            if (!container) return; // Vérification de sécurité
+            
             container.innerHTML = '';
             
             for (let i = 1; i <= 12; i++) {
@@ -110,8 +116,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Initialiser les totaux
-        updateAllTotals();
+        // Vérifier les limites de points
+        checkAllPointLimits();
     }
     
     // Configurer les événements pour les inputs de compétences et points disponibles
@@ -129,16 +135,24 @@ document.addEventListener('DOMContentLoaded', function() {
         // Événements pour les inputs de points disponibles
         Object.values(totalInputs).forEach(input => {
             input.addEventListener('change', function() {
-                // Limiter la valeur entre 0 et 12
-                if (this.value < 0) this.value = 0;
-                if (this.value > 12) this.value = 12;
-                
-                // Vérifier si le nombre de points cochés dépasse maintenant la limite
                 const element = this.id.split('-')[0];
-                const pointStatus = checkPointLimitForElement(element);
                 
-                if (!pointStatus.isValid) {
-                    alert(`Attention: Vous avez ${pointStatus.current} points cochés, mais seulement ${pointStatus.limit} points disponibles pour cet élément.`);
+                // Limiter la valeur selon l'élément
+                if (this.value < 0) this.value = 0;
+                
+                if (element === 'ether') {
+                    // L'Éther peut avoir jusqu'à 20 points
+                    if (this.value > 20) this.value = 20;
+                } else {
+                    // Les autres éléments sont limités à 12 points
+                    if (this.value > 12) this.value = 12;
+                    
+                    // Vérifier si le nombre de points cochés dépasse maintenant la limite
+                    const pointStatus = checkPointLimitForElement(element);
+                    
+                    if (!pointStatus.isValid) {
+                        alert(`Attention: Vous avez ${pointStatus.current} points cochés, mais seulement ${pointStatus.limit} points disponibles pour cet élément.`);
+                    }
                 }
             });
         });
@@ -146,6 +160,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Fonction pour vérifier si le nombre de points cochés respecte la limite
     function checkPointLimitForElement(element) {
+        // Si l'élément n'existe pas ou n'a pas d'input de total, retourner une valeur par défaut
+        if (!totalInputs[element]) {
+            return { current: 0, limit: 0, isValid: true };
+        }
+        
         const availablePoints = parseInt(totalInputs[element].value) || 0;
         const checkedPoints = document.querySelectorAll(`#${element} .point.checked`).length;
         
@@ -159,7 +178,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Vérifier les limites de points pour tous les éléments
     function checkAllPointLimits() {
         elements.forEach(element => {
-            checkPointLimitForElement(element);
+            // Ignorer l'Éther, qui n'a pas de points à cocher
+            if (element !== 'ether') {
+                checkPointLimitForElement(element);
+            }
         });
     }
     
@@ -212,27 +234,47 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Fonction pour exporter le personnage
     function exportCharacter() {
-        const data = getCharacterData();
-        const dataStr = JSON.stringify(data, null, 2);
-        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-        
-        const exportFileDefaultName = `${data.nom || 'personnage'}_aristote.json`;
-        
-        const linkElement = document.createElement('a');
-        linkElement.setAttribute('href', dataUri);
-        linkElement.setAttribute('download', exportFileDefaultName);
-        linkElement.click();
+        try {
+            const data = getCharacterData();
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `${data.nom || 'personnage'}_aristote.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            document.body.appendChild(linkElement); // Nécessaire pour Firefox
+            linkElement.click();
+            document.body.removeChild(linkElement); // Nettoyage après téléchargement
+        } catch (e) {
+            console.error("Erreur lors de l'exportation:", e);
+            alert('Erreur lors de l\'exportation du personnage.');
+        }
     }
     
     // Fonction pour importer le personnage
     function importCharacter() {
         try {
+            if (!importData || !importData.value || importData.value.trim() === '') {
+                alert('Veuillez coller les données du personnage avant de continuer.');
+                return;
+            }
+            
             const data = JSON.parse(importData.value);
             setCharacterData(data);
-            importModal.style.display = 'none';
-            importData.value = '';
+            
+            if (importModal) {
+                importModal.style.display = 'none';
+            }
+            
+            if (importData) {
+                importData.value = '';
+            }
+            
             alert('Personnage importé avec succès !');
         } catch (e) {
+            console.error("Erreur d'importation:", e);
             alert('Erreur lors de l\'importation: Le format des données est invalide.');
         }
     }
@@ -289,6 +331,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     insuffler: competenceInputs.air.insuffler.value,
                     evaporer: competenceInputs.air.evaporer.value
                 },
+                ether: {},  // Éther n'a pas de compétences spécifiques
                 terre: {
                     peser: competenceInputs.terre.peser.value,
                     affermir: competenceInputs.terre.affermir.value,
@@ -311,15 +354,27 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         elements.forEach(element => {
-            data.elements[element] = {
-                points: Array.from(document.querySelectorAll(`#${element} .point`)).map(point => {
-                    return {
-                        index: parseInt(point.dataset.index),
-                        checked: point.classList.contains('checked'),
-                        used: point.classList.contains('used')
-                    };
-                })
-            };
+            // Pour l'Éther, on ne sauvegarde pas de points
+            if (element === 'ether') {
+                data.elements[element] = { points: [] };
+                return;
+            }
+            
+            // Pour les autres éléments, on sauvegarde l'état des points
+            const points = document.querySelectorAll(`#${element} .point`);
+            if (points && points.length > 0) {
+                data.elements[element] = {
+                    points: Array.from(points).map(point => {
+                        return {
+                            index: parseInt(point.dataset.index),
+                            checked: point.classList.contains('checked'),
+                            used: point.classList.contains('used')
+                        };
+                    })
+                };
+            } else {
+                data.elements[element] = { points: [] };
+            }
         });
         
         return data;
@@ -327,77 +382,97 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Fonction pour définir les données du personnage
     function setCharacterData(data) {
-        nomInput.value = data.nom || '';
-        ageInput.value = data.age || '';
-        origineInput.value = data.origine || '';
-        occupationInput.value = data.occupation || '';
-        talentsTextarea.value = data.talents || '';
-        equipementTextarea.value = data.equipement || '';
-        notesTextarea.value = data.notes || '';
+        if (!data) return;
+        
+        // Vérifier que les éléments DOM existent avant d'assigner des valeurs
+        if (nomInput) nomInput.value = data.nom || '';
+        if (ageInput) ageInput.value = data.age || '';
+        if (origineInput) origineInput.value = data.origine || '';
+        if (occupationInput) occupationInput.value = data.occupation || '';
+        if (talentsTextarea) talentsTextarea.value = data.talents || '';
+        if (equipementTextarea) equipementTextarea.value = data.equipement || '';
+        if (notesTextarea) notesTextarea.value = data.notes || '';
         
         // Charger les compétences si elles existent
         if (data.competences) {
-            // Feu
-            if (data.competences.feu) {
-                competenceInputs.feu.exploser.value = data.competences.feu.exploser || 0;
-                competenceInputs.feu.amorcer.value = data.competences.feu.amorcer || 0;
-                competenceInputs.feu.attiser.value = data.competences.feu.attiser || 0;
-            }
-            
-            // Air
-            if (data.competences.air) {
-                competenceInputs.air.filer.value = data.competences.air.filer || 0;
-                competenceInputs.air.insuffler.value = data.competences.air.insuffler || 0;
-                competenceInputs.air.evaporer.value = data.competences.air.evaporer || 0;
-            }
-            
-            // Terre
-            if (data.competences.terre) {
-                competenceInputs.terre.peser.value = data.competences.terre.peser || 0;
-                competenceInputs.terre.affermir.value = data.competences.terre.affermir || 0;
-                competenceInputs.terre.evaluer.value = data.competences.terre.evaluer || 0;
-            }
-            
-            // Eau
-            if (data.competences.eau) {
-                competenceInputs.eau.devier.value = data.competences.eau.devier || 0;
-                competenceInputs.eau.abreuver.value = data.competences.eau.abreuver || 0;
-                competenceInputs.eau.absorber.value = data.competences.eau.absorber || 0;
+            try {
+                // Feu
+                if (data.competences.feu && competenceInputs.feu) {
+                    if (competenceInputs.feu.exploser) competenceInputs.feu.exploser.value = data.competences.feu.exploser || 0;
+                    if (competenceInputs.feu.amorcer) competenceInputs.feu.amorcer.value = data.competences.feu.amorcer || 0;
+                    if (competenceInputs.feu.attiser) competenceInputs.feu.attiser.value = data.competences.feu.attiser || 0;
+                }
+                
+                // Air
+                if (data.competences.air && competenceInputs.air) {
+                    if (competenceInputs.air.filer) competenceInputs.air.filer.value = data.competences.air.filer || 0;
+                    if (competenceInputs.air.insuffler) competenceInputs.air.insuffler.value = data.competences.air.insuffler || 0;
+                    if (competenceInputs.air.evaporer) competenceInputs.air.evaporer.value = data.competences.air.evaporer || 0;
+                }
+                
+                // Terre
+                if (data.competences.terre && competenceInputs.terre) {
+                    if (competenceInputs.terre.peser) competenceInputs.terre.peser.value = data.competences.terre.peser || 0;
+                    if (competenceInputs.terre.affermir) competenceInputs.terre.affermir.value = data.competences.terre.affermir || 0;
+                    if (competenceInputs.terre.evaluer) competenceInputs.terre.evaluer.value = data.competences.terre.evaluer || 0;
+                }
+                
+                // Eau
+                if (data.competences.eau && competenceInputs.eau) {
+                    if (competenceInputs.eau.devier) competenceInputs.eau.devier.value = data.competences.eau.devier || 0;
+                    if (competenceInputs.eau.abreuver) competenceInputs.eau.abreuver.value = data.competences.eau.abreuver || 0;
+                    if (competenceInputs.eau.absorber) competenceInputs.eau.absorber.value = data.competences.eau.absorber || 0;
+                }
+            } catch (e) {
+                console.error("Erreur lors du chargement des compétences:", e);
             }
         }
         
         // Charger les points disponibles
         if (data.pointsDisponibles) {
-            totalInputs.feu.value = data.pointsDisponibles.feu || 0;
-            totalInputs.air.value = data.pointsDisponibles.air || 0;
-            totalInputs.ether.value = data.pointsDisponibles.ether || 0;
-            totalInputs.terre.value = data.pointsDisponibles.terre || 0;
-            totalInputs.eau.value = data.pointsDisponibles.eau || 0;
+            try {
+                if (totalInputs.feu) totalInputs.feu.value = data.pointsDisponibles.feu || 0;
+                if (totalInputs.air) totalInputs.air.value = data.pointsDisponibles.air || 0;
+                if (totalInputs.ether) totalInputs.ether.value = data.pointsDisponibles.ether || 0;
+                if (totalInputs.terre) totalInputs.terre.value = data.pointsDisponibles.terre || 0;
+                if (totalInputs.eau) totalInputs.eau.value = data.pointsDisponibles.eau || 0;
+            } catch (e) {
+                console.error("Erreur lors du chargement des points disponibles:", e);
+            }
         }
         
-        // Réinitialiser tous les points d'abord
-        const allPoints = document.querySelectorAll('.point');
-        allPoints.forEach(point => {
-            point.classList.remove('checked', 'used');
-        });
-        
-        // Définir les états des points selon les données importées
-        if (data.elements) {
-            elements.forEach(element => {
-                if (data.elements[element] && data.elements[element].points) {
-                    data.elements[element].points.forEach(pointData => {
-                        const pointElement = document.querySelector(`#${element} .point[data-index="${pointData.index}"]`);
-                        if (pointElement) {
-                            if (pointData.checked) {
-                                pointElement.classList.add('checked');
-                            }
-                            if (pointData.used) {
-                                pointElement.classList.add('used');
-                            }
-                        }
-                    });
-                }
+        try {
+            // Réinitialiser tous les points d'abord
+            const allPoints = document.querySelectorAll('.point');
+            allPoints.forEach(point => {
+                point.classList.remove('checked', 'used');
             });
+            
+            // Définir les états des points selon les données importées
+            if (data.elements) {
+                elements.forEach(element => {
+                    // Ignorer l'Éther qui n'a pas de points
+                    if (element === 'ether') return;
+                    
+                    if (data.elements[element] && data.elements[element].points) {
+                        data.elements[element].points.forEach(pointData => {
+                            if (!pointData || typeof pointData.index === 'undefined') return;
+                            
+                            const pointElement = document.querySelector(`#${element} .point[data-index="${pointData.index}"]`);
+                            if (pointElement) {
+                                if (pointData.checked) {
+                                    pointElement.classList.add('checked');
+                                }
+                                if (pointData.used) {
+                                    pointElement.classList.add('used');
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        } catch (e) {
+            console.error("Erreur lors de la définition des états des points:", e);
         }
     }
     
