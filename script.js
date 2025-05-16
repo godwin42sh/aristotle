@@ -8,6 +8,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const equipementTextarea = document.getElementById('equipement');
     const notesTextarea = document.getElementById('notes');
     
+    // Éléments des tooltips
+    const elementHeaders = document.querySelectorAll('.element-header');
+    const tooltips = document.querySelectorAll('.element-tooltip');
+    
     // Boutons
     const saveBtn = document.getElementById('save-btn');
     const loadBtn = document.getElementById('load-btn');
@@ -24,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialisation
     initializePoints();
+    setupTooltips();
     
     // Événements
     saveBtn.addEventListener('click', saveCharacter);
@@ -227,4 +232,48 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("- Cliquez sur un point pour le cocher/décocher");
     console.log("- Maintenez Shift + cliquez sur un point déjà coché pour le marquer comme utilisé");
     console.log("- Sauvegardez votre personnage avec le bouton 'Sauvegarder'");
+    
+    // Fonction pour configurer les tooltips
+    function setupTooltips() {
+        // Pour les appareils tactiles
+        elementHeaders.forEach(header => {
+            // Ajouter un gestionnaire de clic pour les appareils tactiles
+            header.addEventListener('click', function(e) {
+                // Si on a cliqué sur l'en-tête mais pas sur le tooltip lui-même
+                if (!e.target.closest('.element-tooltip')) {
+                    const tooltip = this.querySelector('.element-tooltip');
+                    
+                    // Fermer tous les autres tooltips
+                    tooltips.forEach(t => {
+                        if (t !== tooltip) {
+                            t.style.visibility = 'hidden';
+                            t.style.opacity = '0';
+                        }
+                    });
+                    
+                    // Basculer l'état du tooltip actuel
+                    if (tooltip.style.visibility === 'visible') {
+                        tooltip.style.visibility = 'hidden';
+                        tooltip.style.opacity = '0';
+                    } else {
+                        tooltip.style.visibility = 'visible';
+                        tooltip.style.opacity = '1';
+                    }
+                    
+                    // Empêcher la propagation pour éviter que le clic ne ferme immédiatement le tooltip
+                    e.stopPropagation();
+                }
+            });
+        });
+        
+        // Fermer les tooltips quand on clique ailleurs sur la page
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.element-header')) {
+                tooltips.forEach(tooltip => {
+                    tooltip.style.visibility = 'hidden';
+                    tooltip.style.opacity = '0';
+                });
+            }
+        });
+    }
 });

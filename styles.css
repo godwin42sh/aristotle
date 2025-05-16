@@ -104,6 +104,7 @@ h2 {
     margin-bottom: 15px;
     border-bottom: 1px solid;
     padding-bottom: 5px;
+    position: relative;
 }
 
 /* Styles spécifiques pour chaque élément */
@@ -282,6 +283,58 @@ button:hover {
 .point:hover {
     transform: scale(1.1);
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Styles pour les tooltips */
+.element-tooltip {
+    position: absolute;
+    visibility: hidden;
+    opacity: 0;
+    background-color: #fff;
+    color: #333;
+    text-align: left;
+    border-radius: 5px;
+    padding: 10px;
+    width: 300px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border: 2px solid;
+    transition: opacity 0.3s, visibility 0.3s;
+    z-index: 100;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.85em;
+    margin-top: 5px;
+}
+
+.element-header:hover .element-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.element-tooltip p {
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+.feu .element-tooltip {
+    border-color: #d74b4b;
+    background-color: rgba(255, 245, 245, 0.98);
+}
+
+.air .element-tooltip {
+    border-color: #6b82d7;
+    background-color: rgba(245, 245, 255, 0.98);
+}
+
+.terre .element-tooltip {
+    border-color: #5eaa5e;
+    background-color: rgba(245, 255, 245, 0.98);
+}
+
+.eau .element-tooltip {
+    border-color: #4ea2c7;
+    background-color: rgba(245, 250, 255, 0.98);
 }
 
 /* Responsive */
