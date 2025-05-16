@@ -7,50 +7,79 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <header>
+    <div class="fiche-container">
+        <div class="fiche-header">
             <h1>Fiche de Personnage</h1>
-            <h2>Jeu de Rôle - Époque d'Aristote</h2>
-        </header>
-
-        <div class="character-info">
-            <div class="form-group">
-                <label for="character-name">Nom du Personnage:</label>
-                <input type="text" id="character-name" name="character-name">
-            </div>
-            <div class="form-group">
-                <label for="character-description">Description:</label>
-                <textarea id="character-description" name="character-description" rows="3"></textarea>
+            <div class="personnage-info">
+                <div class="info-group">
+                    <label for="nom">Nom :</label>
+                    <input type="text" id="nom" name="nom">
+                </div>
+                <div class="info-group">
+                    <label for="age">Âge :</label>
+                    <input type="text" id="age" name="age">
+                </div>
+                <div class="info-group">
+                    <label for="origine">Origine :</label>
+                    <input type="text" id="origine" name="origine">
+                </div>
+                <div class="info-group">
+                    <label for="occupation">Occupation :</label>
+                    <input type="text" id="occupation" name="occupation">
+                </div>
             </div>
         </div>
 
-        <div class="elements-container">
-            <div class="element fire" id="fire-element">
-                <h3>Feu</h3>
+        <div class="elements-grid">
+            <div class="element feu" id="feu">
+                <div class="element-header">
+                    <h2>Feu</h2>
+                </div>
                 <div class="points-container">
-                    <!-- Les 12 points du Feu seront générés par JavaScript -->
+                    <!-- Sera rempli par JavaScript -->
                 </div>
             </div>
             
-            <div class="element water" id="water-element">
-                <h3>Eau</h3>
+            <div class="element air" id="air">
+                <div class="element-header">
+                    <h2>Air</h2>
+                </div>
                 <div class="points-container">
-                    <!-- Les 12 points de l'Eau seront générés par JavaScript -->
+                    <!-- Sera rempli par JavaScript -->
                 </div>
             </div>
             
-            <div class="element earth" id="earth-element">
-                <h3>Terre</h3>
+            <div class="element terre" id="terre">
+                <div class="element-header">
+                    <h2>Terre</h2>
+                </div>
                 <div class="points-container">
-                    <!-- Les 12 points de la Terre seront générés par JavaScript -->
+                    <!-- Sera rempli par JavaScript -->
                 </div>
             </div>
             
-            <div class="element air" id="air-element">
-                <h3>Air</h3>
-                <div class="points-container">
-                    <!-- Les 12 points de l'Air seront générés par JavaScript -->
+            <div class="element eau" id="eau">
+                <div class="element-header">
+                    <h2>Eau</h2>
                 </div>
+                <div class="points-container">
+                    <!-- Sera rempli par JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div class="sections-complementaires">
+            <div class="section-talents">
+                <h2>Talents</h2>
+                <textarea id="talents"></textarea>
+            </div>
+            <div class="section-equipement">
+                <h2>Équipement</h2>
+                <textarea id="equipement"></textarea>
+            </div>
+            <div class="section-notes">
+                <h2>Notes</h2>
+                <textarea id="notes"></textarea>
             </div>
         </div>
 

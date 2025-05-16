@@ -1,7 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Éléments du DOM
-    const characterName = document.getElementById('character-name');
-    const characterDescription = document.getElementById('character-description');
+    const nomInput = document.getElementById('nom');
+    const ageInput = document.getElementById('age');
+    const origineInput = document.getElementById('origine');
+    const occupationInput = document.getElementById('occupation');
+    const talentsTextarea = document.getElementById('talents');
+    const equipementTextarea = document.getElementById('equipement');
+    const notesTextarea = document.getElementById('notes');
+    
+    // Boutons
     const saveBtn = document.getElementById('save-btn');
     const loadBtn = document.getElementById('load-btn');
     const exportBtn = document.getElementById('export-btn');
@@ -12,14 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const confirmImport = document.getElementById('confirm-import');
     const importData = document.getElementById('import-data');
     
-    // Éléments et leurs points
-    const elements = ['fire', 'water', 'earth', 'air'];
-    const elementsTranslation = {
-        'fire': 'Feu',
-        'water': 'Eau',
-        'earth': 'Terre',
-        'air': 'Air'
-    };
+    // Éléments et leurs identifiants
+    const elements = ['feu', 'air', 'terre', 'eau'];
     
     // Initialisation
     initializePoints();
@@ -47,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction pour initialiser les points pour chaque élément
     function initializePoints() {
         elements.forEach(element => {
-            const container = document.querySelector(`#${element}-element .points-container`);
+            const container = document.querySelector(`#${element} .points-container`);
             container.innerHTML = '';
             
             for (let i = 1; i <= 12; i++) {
@@ -108,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const dataStr = JSON.stringify(data, null, 2);
         const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
         
-        const exportFileDefaultName = `${data.name || 'personnage'}_aristote.json`;
+        const exportFileDefaultName = `${data.nom || 'personnage'}_aristote.json`;
         
         const linkElement = document.createElement('a');
         linkElement.setAttribute('href', dataUri);
@@ -132,8 +133,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction pour réinitialiser le personnage
     function resetCharacter() {
         if (confirm('Êtes-vous sûr de vouloir réinitialiser votre personnage ? Toutes les modifications non sauvegardées seront perdues.')) {
-            characterName.value = '';
-            characterDescription.value = '';
+            nomInput.value = '';
+            ageInput.value = '';
+            origineInput.value = '';
+            occupationInput.value = '';
+            talentsTextarea.value = '';
+            equipementTextarea.value = '';
+            notesTextarea.value = '';
             
             const points = document.querySelectorAll('.point');
             points.forEach(point => {
@@ -145,14 +151,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction pour obtenir les données du personnage
     function getCharacterData() {
         const data = {
-            name: characterName.value,
-            description: characterDescription.value,
+            nom: nomInput.value,
+            age: ageInput.value,
+            origine: origineInput.value,
+            occupation: occupationInput.value,
+            talents: talentsTextarea.value,
+            equipement: equipementTextarea.value,
+            notes: notesTextarea.value,
             elements: {}
         };
         
         elements.forEach(element => {
             data.elements[element] = {
-                points: Array.from(document.querySelectorAll(`#${element}-element .point`)).map(point => {
+                points: Array.from(document.querySelectorAll(`#${element} .point`)).map(point => {
                     return {
                         index: parseInt(point.dataset.index),
                         checked: point.classList.contains('checked'),
@@ -167,8 +178,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Fonction pour définir les données du personnage
     function setCharacterData(data) {
-        characterName.value = data.name || '';
-        characterDescription.value = data.description || '';
+        nomInput.value = data.nom || '';
+        ageInput.value = data.age || '';
+        origineInput.value = data.origine || '';
+        occupationInput.value = data.occupation || '';
+        talentsTextarea.value = data.talents || '';
+        equipementTextarea.value = data.equipement || '';
+        notesTextarea.value = data.notes || '';
         
         // Réinitialiser tous les points d'abord
         const allPoints = document.querySelectorAll('.point');
@@ -181,7 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
             elements.forEach(element => {
                 if (data.elements[element] && data.elements[element].points) {
                     data.elements[element].points.forEach(pointData => {
-                        const pointElement = document.querySelector(`#${element}-element .point[data-index="${pointData.index}"]`);
+                        const pointElement = document.querySelector(`#${element} .point[data-index="${pointData.index}"]`);
                         if (pointElement) {
                             if (pointData.checked) {
                                 pointElement.classList.add('checked');
@@ -211,5 +227,4 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("- Cliquez sur un point pour le cocher/décocher");
     console.log("- Maintenez Shift + cliquez sur un point déjà coché pour le marquer comme utilisé");
     console.log("- Sauvegardez votre personnage avec le bouton 'Sauvegarder'");
-    console.log("- Exportez votre personnage pour le partager ou le sauvegarder hors-ligne");
 });
