@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiche de Personnage - Époque d'Aristote</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Fiche de Personnage</h1>
+            <h2>Jeu de Rôle - Époque d'Aristote</h2>
+        </header>
+
+        <div class="character-info">
+            <div class="form-group">
+                <label for="character-name">Nom du Personnage:</label>
+                <input type="text" id="character-name" name="character-name">
+            </div>
+            <div class="form-group">
+                <label for="character-description">Description:</label>
+                <textarea id="character-description" name="character-description" rows="3"></textarea>
+            </div>
+        </div>
+
+        <div class="elements-container">
+            <div class="element fire" id="fire-element">
+                <h3>Feu</h3>
+                <div class="points-container">
+                    <!-- Les 12 points du Feu seront générés par JavaScript -->
+                </div>
+            </div>
+            
+            <div class="element water" id="water-element">
+                <h3>Eau</h3>
+                <div class="points-container">
+                    <!-- Les 12 points de l'Eau seront générés par JavaScript -->
+                </div>
+            </div>
+            
+            <div class="element earth" id="earth-element">
+                <h3>Terre</h3>
+                <div class="points-container">
+                    <!-- Les 12 points de la Terre seront générés par JavaScript -->
+                </div>
+            </div>
+            
+            <div class="element air" id="air-element">
+                <h3>Air</h3>
+                <div class="points-container">
+                    <!-- Les 12 points de l'Air seront générés par JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button id="save-btn">Sauvegarder</button>
+            <button id="load-btn">Charger</button>
+            <button id="export-btn">Exporter</button>
+            <button id="import-btn">Importer</button>
+            <button id="reset-btn">Réinitialiser</button>
+        </div>
+
+        <div class="modal" id="import-modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>Importer une fiche de personnage</h3>
+                <textarea id="import-data" rows="5" placeholder="Collez ici les données de votre fiche de personnage..."></textarea>
+                <button id="confirm-import">Importer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
