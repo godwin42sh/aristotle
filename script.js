@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalInputs = {
         feu: document.getElementById('feu-total'),
         air: document.getElementById('air-total'),
+        ether: document.getElementById('ether-total'),
         terre: document.getElementById('terre-total'),
         eau: document.getElementById('eau-total')
     };
@@ -56,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const importData = document.getElementById('import-data');
     
     // Éléments et leurs identifiants
-    const elements = ['feu', 'air', 'terre', 'eau'];
+    const elements = ['feu', 'air', 'ether', 'terre', 'eau'];
     
     // Initialisation
     initializePoints();
@@ -302,6 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
             pointsDisponibles: {
                 feu: totalInputs.feu.value,
                 air: totalInputs.air.value,
+                ether: totalInputs.ether.value,
                 terre: totalInputs.terre.value,
                 eau: totalInputs.eau.value
             },
@@ -368,6 +370,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (data.pointsDisponibles) {
             totalInputs.feu.value = data.pointsDisponibles.feu || 0;
             totalInputs.air.value = data.pointsDisponibles.air || 0;
+            totalInputs.ether.value = data.pointsDisponibles.ether || 0;
             totalInputs.terre.value = data.pointsDisponibles.terre || 0;
             totalInputs.eau.value = data.pointsDisponibles.eau || 0;
         }
